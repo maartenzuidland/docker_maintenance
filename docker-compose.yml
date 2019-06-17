@@ -1,0 +1,24 @@
+version: '3.5'
+
+services:
+  portainer:
+    container_name: portainer
+    image: portainer/portainer
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=web"
+      - "traefik.basic.frontend.rule=Host:portainer.maartenzuidland.nl"
+    ports:
+      - '9000:9000'
+    restart: unless-stopped
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - '${portainer_config}:/data'
+
+  watchtower:
+    container_name: watchtower
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - '${docker_config}:/config.json'
+    command: '--interval 30 --cleanup'
