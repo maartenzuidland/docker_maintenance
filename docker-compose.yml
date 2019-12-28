@@ -1,25 +1,44 @@
-version: '3.5'
+version: '3'
 
 services:
   portainer:
     container_name: portainer
     image: portainer/portainer
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=web"
-      - "traefik.basic.frontend.rule=Host:portainer.maartenzuidland.nl"
     ports:
       - '9000:9000'
     restart: unless-stopped
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock'
-      - '${portainer_config}:/data'
+      - '/home/maarten/docker_config/container_config/portainer:/data'
 
   watchtower:
     container_name: watchtower
     image: containrrr/watchtower
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - '${docker_config}:/config.json'
+      - '/home/maarten/.docker/config.json:/config.json'
     command: '--interval 30 --cleanup'
     restart: unless-stopped
+
+#  unifi-controller:
+#    image: linuxserver/unifi-controller
+#    container_name: unifi-controller
+#    environment:
+#      PUID: ${PUID}
+#      PGID: ${PGID}
+#    volumes:
+#      - "${unify_config}:/config"
+#    ports:
+#      - 3478:3478/udp
+#      - 10001:10001/udp
+#      - 8080:8080
+#      - 8081:8081
+#      - 8443:8443
+#      - 8843:8843
+#      - 8880:8880
+#      - 6789:6789
+#    labels:
+#      - "traefik.enable=true"
+#      - "traefik.docker.network=web"
+#      - "traefik.basic.frontend.rule=Host:unify.maartenzuidland.nl"
+#    restart: unless-stopped
