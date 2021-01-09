@@ -3,7 +3,7 @@ version: '3'
 services:
   portainer:
     container_name: portainer
-    image: portainer/portainer
+    image: portainer/portainer-ce
     ports:
       - '9000:9000'
     restart: always
@@ -16,5 +16,7 @@ services:
     image: containrrr/watchtower
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    command: '--interval 30 --cleanup'
+    environment:
+      - TZ=Europe/Amsterdam
+    command: '--schedule "0 00 * * *" --cleanup --include-stopped'
     restart: always
